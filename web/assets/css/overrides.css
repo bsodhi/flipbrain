@@ -1,0 +1,170 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Feb 19, 2014, 10:11:16 PM
+    Author     : theuser
+*/
+body {
+  padding-top: 70px;
+}
+.superscript { position: relative; top: -0.5em; font-size: 80%; }
+.big-text {
+    font-size: 1.2em;
+}
+u {    
+    border-bottom: 1px dotted #000;
+    text-decoration: none;
+}
+.box {
+    border: #269abc thin solid;
+    padding: 10px;
+    margin: 10px;
+}
+.grid-350h {
+    height: 350px;
+    width: 100%;
+}
+
+.sec-heading {
+    font-variant: small-caps;
+    font-weight: bolder;
+    font-size: large;
+    color: #269abc;
+}
+.sec-heading2 {
+    font-variant: small-caps;
+    font-weight: bolder;
+    font-size: large;
+    color: #269abc;
+}
+#spinner {
+    position: relative;
+}
+.ajax-loader {
+    position: fixed;
+    left: 42%;
+    top: 15px;
+    display: none;
+    z-index: 90;
+}
+.left2 {float:left}
+.right2{float:right}
+.center2{margin:0 auto; text-align: center;}
+
+.left1 {float:left;padding: inherit; margin: inherit}
+.right1{float:right; padding: inherit; margin: inherit}
+
+th {
+    background-color: #c6e3e9;
+}
+
+/* Animation area */
+.animate-show {
+  line-height: 20px;
+  opacity: 1;
+  padding: 10px;
+  background: white;
+}
+
+.animate-show.ng-hide-add.ng-hide-add-active,
+.animate-show.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.5s;
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+}
+
+.status-msg {
+    background-color: #c6e3e9; 
+    width: 100%;
+    height: 15px; 
+    font-size: small;
+    text-align: center;
+}
+.selected-item {
+    border-right: #28a4c9 dotted 1px;
+}
+/* comments area */
+#comments { display: block; }
+#comments .cmmnt, ul .cmmnt, ul ul .cmmnt { 
+    display: block; position: relative; 
+    padding-left: 40px; border-top: 1px solid #ddd; 
+}
+
+#comments .cmmnt .avatar  { position: absolute; top: 8px; left: 0; }
+#comments .cmmnt .avatar img { 
+  -webkit-border-radius: 3px; 
+  -moz-border-radius: 3px; 
+  border-radius: 3px; 
+  -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,0.44);
+  -moz-box-shadow: 1px 1px 2px rgba(0,0,0,0.44);
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.44);
+  -webkit-transition: all 0.4s linear;
+  -moz-transition: all 0.4s linear;
+  -ms-transition: all 0.4s linear;
+  -o-transition: all 0.4s linear;
+  transition: all 0.4s linear;
+}
+
+#comments .cmmnt .avatar a:hover img { opacity: 0.77; }
+#comments .cmmnt .cmmnt-content { padding: 0px 3px; padding-bottom: 8px; padding-top: 8px; }
+#comments .cmmnt .cmmnt-content header { display: block; margin-bottom: 8px; }
+#comments .cmmnt .cmmnt-content header .pubdate { color: #777; }
+#comments .cmmnt .cmmnt-content header .userlink { font-weight: normal; } 
+#comments .cmmnt .replies { margin-bottom: 7px; }
+
+.drag-handle{cursor: move;}
+
+.animate-text {
+    -webkit-animation: color-change 1s infinite;
+    -moz-animation: color-change 1s infinite;
+    -o-animation: color-change 1s infinite;
+    -ms-animation: color-change 1s infinite;
+    animation: color-change 1s infinite;
+}
+
+@-webkit-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+@-moz-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+@-ms-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+@-o-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+@keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+/* Rich text area height overridden */
+.ta-editor.ta-html, .ta-scroll-window.form-control {
+	min-height: 100px;
+	height: 200px;
+	overflow: auto;
+	font-family: inherit;
+	font-size: 100%;
+}
+.ta-scroll-window > .ta-bind {
+	height: auto;
+	min-height: 198px;
+	padding: 6px 12px;
+}

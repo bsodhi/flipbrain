@@ -1,0 +1,27 @@
+<div ng-controller="HomeCtrl">
+    <div ng-include="'./Views/Partials/header.html'"></div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1"><button class="btn btn-primary" ng-click="prevPage()" ng-disabled="!hasPrev">&Lt;Previous</button></div>
+                    <div class="col-md-3 col-md-offset-4 sec-heading">Available learning trails</div>
+                    <div class="col-md-offset-3 col-md-1"><button class="btn btn-primary" ng-click="nextPage()" ng-disabled="!hasNext">Next &Gt;</button></div>
+                </div>
+                <div ng-repeat="tt in RootModel.Data.Trails" class="row">
+                    <div class="col-md-3" ng-repeat="t in tt">
+                        <div class="thumbnail">
+                            <a href="#/ViewTrail/{{t.trailId}}">
+                                <img src="{{RootModel.getThumbnailUrl(t.thumbnailUrl);}}" alt="{{t.title}}" />
+                                <h4>{{t.title}}</h4>
+                            </a>
+                            <span class="label label-info">{{t.tags}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+
+</div>

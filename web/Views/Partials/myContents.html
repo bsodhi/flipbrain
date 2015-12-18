@@ -1,0 +1,165 @@
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div>
+        <span class="navbar-right">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-xs" ng-click="addToTrail()"
+                    data-toggle="modal" data-target="#trailModal">
+                New trail from selected
+            </button>
+            <button type="button" class="btn btn-primary btn-xs"
+                    data-toggle="modal" data-target="#contentModal">
+                Add content
+            </button>
+            <button type="button" class="btn btn-primary btn-xs"
+                    data-toggle="modal" data-target="#ytModal">
+                Add from YouTube
+            </button>
+        </span>
+        <!-- Table -->
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>S#</th>
+                    <th><a href="" ng-click="Sort.pred4 = 'contentType';
+                        Sort.rev4 = !Sort.rev4;">Type</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'title';
+                        Sort.rev4 = !Sort.rev4;">Title</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'url';
+                        Sort.rev4 = !Sort.rev4;">URL</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'description';
+                        Sort.rev4 = !Sort.rev4;">Description</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'tags';
+                        Sort.rev4 = !Sort.rev4;">Tags</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'isPrivate';
+                        Sort.rev4 = !Sort.rev4;">Private</a></th>
+                    <th><a href="" ng-click="Sort.pred4 = 'updTs';
+                        Sort.rev4 = !Sort.rev4;">Created on</a></th>
+                    <th>Select</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="c in Model.PF.content| orderBy:Sort.pred4:Sort.rev4" ng-hide="c.deleted">
+                    <td>{{$index + 1}}</td>
+                    <td>
+                        <select ng-model="c.contentType" class="form-control">
+                            <option value="V" selected="selected">Video</option>
+                            <option value="R">Resource</option>
+                        </select>
+                    </td>
+                    <td><input ng-model="c.title" type="text" class="form-control" tooltip="{{c.title}}"/></td>
+                    <td><input ng-model="c.url" type="text" class="form-control" tooltip="{{c.url}}"/></td>
+                    <td><input ng-model="c.description" type="text" class="form-control" tooltip="{{c.description}}"/></td>
+                    <td><input tooltip="Comma seperated list of tags." ng-model="c.tags" type="text" class="form-control"/></td>
+                    <td><input ng-model="c.isPrivate" type="checkbox" class="checkbox"/></td>
+                    <td>{{c.updTs| date:'medium'}}</td>
+                    <td><input ng-model="c.isSelected" type="checkbox" class="checkbox"/></td>
+                    <td>
+                        <button tooltip="Save changes to this item" type="submit" ng-click="saveContent(c)"><span class="glyphicon glyphicon-floppy-save"></span></button>&nbsp;
+                    </td>
+                    <td>
+                        <button tooltip="Delete this item" type="submit" ng-click="removeContent(c)"><span class="glyphicon glyphicon-remove"></span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div ng-include="'./Views/Partials/trailModal.html'"></div>
+<!-- Modal for adding content item -->
+<div class="modal fade" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="RootModel.modalStatus = undefined;">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="contentModalLabel">New Content</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-hide="RootModel.modalStatus === undefined" class="alert alert-info" role="alert">{{RootModel.modalStatus}}</div>
+                <form class="form-horizontal" ng-show="RootModel.modalStatus === undefined">
+                    <div class="form-group">
+                        <label for="tTitle" class="col-sm-2 control-label">Type</label>
+                        <div class="col-sm-10">
+                            <select ng-model="Model.temp.Content.contentType" class="form-control">
+                                <option value="V" selected="selected">Video</option>
+                                <option value="R">Resource</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tTitle" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" ng-model="Model.temp.Content.title" class="form-control" id="tTitle" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tURL" class="col-sm-2 control-label">URL</label>
+                        <div class="col-sm-10">
+                            <input type="text" ng-model="Model.temp.Content.url" class="form-control" id="tURL" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tDesc" class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-10">
+                            <input type="text" ng-model="Model.temp.Content.description" class="form-control" id="tDesc" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tPvt" class="col-sm-2 control-label">Private</label>
+                        <div class="col-sm-10">
+                            <input id="tPvt" ng-model="Model.temp.Content.isPrivate" type="checkbox" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tTags" class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-10">
+                            <input type="text" ng-model="Model.temp.Content.tags" class="form-control" id="tTags" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RootModel.modalStatus = undefined;">Close</button>
+                            <button type="submit" class="btn btn-primary" ng-click="addContent()">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- YouTube content import -->
+<div class="modal fade" id="ytModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="RootModel.modalStatus = undefined;">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="contentModalLabel">Add video from YouTube</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-hide="RootModel.modalStatus === undefined" class="alert alert-info" role="alert">{{RootModel.modalStatus}}</div>
+                <form ng-show="RootModel.modalStatus === undefined">
+                    <div class="form-group">
+                        <label for="ytURLs" class="control-label">YouTube video URLs</label>
+                        <textarea id="ytURLs" rows="5" ng-model="Model.temp.YT.url" class="form-control">
+                        </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ytTags" class="control-label">Tags</label>
+                        <input id="ytTags" type="text" ng-model="Model.temp.YT.tags" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="ytPvt" class="control-label">Private</label>
+                        <input id="ytPvt" ng-model="Model.temp.YT.isPrivate" type="checkbox" />
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RootModel.modalStatus = undefined;">Close</button>
+                        <button type="submit" class="btn btn-primary" ng-click="addYTContent()">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

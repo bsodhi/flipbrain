@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Set name="contextPath">/</Set>
+    <New id="DSTest" class="org.eclipse.jetty.plus.jndi.Resource">
+     <Arg></Arg>
+     <Arg>jdbc/SREG</Arg>
+     <Arg>
+        <New class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
+           <Set name="Url">jdbc:mysql://localhost:3306/flipbrain?autoReconnect=true</Set>
+           <Set name="User">flipbrain</Set>
+           <Set name="Password">****</Set>
+        </New>
+     </Arg>
+    </New>
+</Configure>

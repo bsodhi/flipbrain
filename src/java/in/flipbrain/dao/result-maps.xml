@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="in.flipbrain.dao.BaseMapper">
+    <resultMap id="BaseDto" type="BaseDto">
+        <result property="insTs" column="ins_ts"/>
+        <result property="updTs" column="upd_ts"/>
+    </resultMap>
+    <resultMap id="TrailDto" type="TrailDto" extends="BaseDto">
+        <result property="trailId" column="trail_id"/>
+        <result property="title" column="title"/>
+        <result property="isPrivate" column="is_private"/>
+        <result property="createdBy" column="user_id"/>
+        <result property="thumbnailUrl" column="url"/>
+        <result property="tags" column="tags"/>
+    </resultMap>
+    <resultMap id="ContentDto" type="ContentDto" extends="BaseDto">
+        <result property="contentId" column="content_id"/>
+        <result property="contentType" column="content_type"/>
+        <result property="title" column="title"/>
+        <result property="isPrivate" column="is_private"/>
+        <result property="url" column="url"/>
+        <result property="description" column="description"/>
+        <result property="userId" column="user_id"/>
+        <result property="tags" column="tags"/>
+    </resultMap>
+    <resultMap id="TrailItemDto" type="TrailItemDto" extends="BaseDto">
+        <result property="itemId" column="item_id"/>
+        <result property="trailId" column="trail_id"/>
+        <result property="seqNo" column="seq_no"/>
+        <result property="content.contentId" column="content_id"/>
+        <result property="content.contentType" column="content_type"/>
+        <result property="content.title" column="title"/>
+        <result property="content.isPrivate" column="is_private"/>
+        <result property="content.url" column="url"/>
+        <result property="content.description" column="description"/>
+        <result property="content.tags" column="tags"/>
+        <result property="content.userId" column="user_id"/>
+    </resultMap>
+    <resultMap id="UserDto" type="UserDto">
+        <result property="userId" column="user_id"/>
+        <result property="login" column="login"/>
+        <result property="password" column="passwd"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="gender" column="gender"/>
+        <result property="external" column="is_external"/>
+        <result property="failedLogins" column="failed_logins"/>
+        <result property="lastLogin" column="last_login"/>
+    </resultMap>
+    <resultMap id="TrailSubsDto" type="TrailSubsDto">
+        <result property="subsId" column="subsc_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="trailId" column="trail_id"/>
+        <result property="trail.trailId" column="trail_id"/>
+        <result property="trail.title" column="title"/>
+        <result property="trail.isPrivate" column="is_private"/>
+        <result property="trail.createdBy" column="user_id"/>
+        <result property="trail.thumbnailUrl" column="url"/>
+        <result property="trail.tags" column="tags"/>
+    </resultMap>
+    <resultMap id="CommentDto" type="CommentDto">
+        <result property="commentId" column="comment_id"/>
+        <result property="author" column="author"/>
+        <result property="authorName" column="author_name"/>
+        <result property="subject" column="subject"/>
+        <result property="tags" column="tags"/>
+        <result property="inReplyTo" column="in_reply_to"/>
+        <result property="trailItemId" column="item_id"/>
+        <result property="comment" column="comment"/>
+        <result property="updTs" jdbcType="TIMESTAMP" column="upd_ts"/>
+        <result property="insTs" jdbcType="TIMESTAMP" column="ins_ts"/>
+        <result property="level" column="level"/>
+    </resultMap>
+    <resultMap id="QuestionDto" type="QuestionDto">
+        <result property="questionId" column="question_id"/>
+        <result property="author" column="author"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="question" column="question"/>
+        <result property="feedback" column="feedback"/>
+    </resultMap>
+    <resultMap id="ViewableAnswerOptionDto" type="AnswerOptionDto">
+        <result property="answerOptId" column="ans_opt_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="author" column="author"/>
+        <result property="answer" column="answer"/>
+    </resultMap>
+    <resultMap id="AnswerOptionDto" type="AnswerOptionDto" extends="ViewableAnswerOptionDto">
+        <result property="correct" column="is_correct"/>
+    </resultMap>
+    <resultMap id="AssessmentQuestionDto" type="AssessmentQuestionDto" extends="QuestionDto">
+        <result property="assessQuestId" column="assess_question_id"/>
+        <result property="assessId" column="assessment_id"/>
+        <result property="points" column="points"/>
+    </resultMap>
+    <resultMap id="AssessmentDto" type="AssessmentDto">
+        <result property="assessId" column="assessment_id"/>
+        <result property="published" column="is_published"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="author" column="author"/>
+        <result property="wrongAnsPoints" column="wrong_ans_points"/>
+        <result property="correctAnsPoints" column="correct_ans_points"/>
+        <result property="randomizeQuestions" column="randomize_questions"/>
+        <result property="randomizeAnswers" column="randomize_answers"/>
+        <result property="allottedMinutes" column="allotted_minutes"/>
+        <result property="showScore" column="show_score"/>
+        <result property="openTime" column="open_time"/>
+        <result property="closeTime" column="close_time"/>
+        <result property="updTs" column="upd_ts"/>
+    </resultMap>
+    <resultMap id="AssessmentForTaking" type="AssessmentSubmissionDto" extends="AssessmentDto">
+    </resultMap>
+    <resultMap id="AssessmentSubmissionDto" type="AssessmentSubmissionDto" extends="AssessmentDto">
+        <result property="submissionId" column="submission_id"/>
+        <result property="assessId" column="assessment_id"/>
+        <result property="student" column="student"/>
+        <result property="studentName" column="student_name"/>
+        <result property="draft" column="is_draft"/>
+        <result property="submittedOn" column="submitted_on"/>
+        <result property="startTime" column="start_time"/>
+    </resultMap>
+    <resultMap id="SubmissionResponseDto" type="SubmissionResponseDto">
+        <result property="responseId" column="response_id"/>
+        <result property="submissionId" column="submission_id"/>
+        <result property="assessQuestId" column="assess_question_id"/>
+        <result property="answerOptId" column="ans_opt_id"/>
+        <result property="response" column="response"/>
+    </resultMap>
+    <resultMap id="TrailAssessmentDto" type="TrailAssessmentDto" extends="AssessmentDto">
+        <result property="trailAssessId" column="trail_assess_id"/>
+        <result property="trailId" column="trail_id"/>
+    </resultMap>
+</mapper>

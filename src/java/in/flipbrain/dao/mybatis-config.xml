@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
+    <typeAliases>
+        <package name="in.flipbrain.dto"/>
+        <package name="in.flipbrain.dao"/>
+    </typeAliases>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="JNDI">
+                <property name="data_source" value="java:comp/env/jdbc/SREG"/>
+            </dataSource>
+            <!--            <dataSource type="POOLED">
+                <property name="driver" value="${db_driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${db_username}"/>
+                <property name="password" value="${db_password}"/>
+            </dataSource>-->
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="in/flipbrain/dao/queries.xml"/>
+        <mapper resource="in/flipbrain/dao/result-maps.xml"/>
+        <!-- <mapper resource="in/flipbrain/dao/master-data-mapper.xml"/> -->
+    </mappers>
+</configuration>

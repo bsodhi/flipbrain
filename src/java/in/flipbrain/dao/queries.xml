@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="in.flipbrain.dao.BaseMapper">
+    <insert id="insertAnalytics" useGeneratedKeys="true"
+            keyProperty="analyticsId">
+        INSERT INTO flipbrain.analytics(action, user_id, trail_id,
+        trail_item_id, comment_id)
+        VALUES(#{action}, #{userId}, #{trailId}, #{trailItemId}, #{commentId});
+    </insert>
+    <select id="getUserCount" resultType="int">
+        select count(*) from flipbrain.users;
+    </select>
+    <select id="getAddressById" resultType="AddressDto">
+        SELECT
+        a.address_id as addressId,
+        a.street_address as streetAddress,
+        a.city_vpo as cityOrVpo,
+        a.pin_code as postalCode,
+        a.home_phone as homePhone,
+        a.address_district_id as district
+        FROM flipbrain.addresses a
+        WHERE a.address_id=#{id}
+    </select>
+    <insert id="addOnetimeAuth" useGeneratedKeys="true"
+            keyProperty="authId">
+        INSERT INTO flipbrain.onetime_auth
+        (user_id, uuid_part, expires_on)
+        VALUES(#{userId}, #{uuid}, #{expiresOn});
+    </insert>
+    <update id="clearOnetimeAuth">
+        DELETE FROM flipbrain.onetime_auth
+        WHERE user_id=#{userId} AND uuid_part = #{uuid}
+    </update>
+    <select id="onetimeAuthExists" resultType="boolean">
+        SELECT CASE WHEN exists (SELECT * FROM flipbrain.onetime_auth r
+        WHERE r.user_id=#{userId} and r.uuid_part = #{uuid} and 
+        expires_on &gt; current_timestamp()) THEN true ELSE false END AS 'exists';
+    </select>
+    <insert id="insertUser" useGeneratedKeys="true"
+            keyProperty="userId">
+        INSERT INTO flipbrain.users
+        ( login, passwd, first_name, last_name, middle_name, gender,
+        is_external, email )
+        VALUES ( #{login}, #{password}, #{firstName}, #{lastName}, #{middleName},
+        #{gender}, #{external}, #{email} );
+
+    </insert>
+    <update id="updateUser">
+        UPDATE flipbrain.users
+        SET
+        login = #{login},
+        <if test="password != null">
+            passwd = #{password},
+        </if>
+        first_name = #{firstName},last_name = #{lastName}, gender = #{gender},
+        verified = #{verified}
+        WHERE user_id=#{userId}
+    </update>
+    <update id="recordLoginAttempt">
+        UPDATE flipbrain.users
+        SET last_login = CURRENT_TIMESTAMP(), failed_logins = #{failedLogins}
+        WHERE user_id=#{userId}
+    </update>
+    <sql id="userSelect">
+        SELECT u.* FROM flipbrain.users u
+    </sql>
+    <select id="getUserById" resultMap="UserDto">
+        <include refid="userSelect"/>
+        WHERE u.user_id=#{userId};
+    </select>
+    <select id="getUserByLogin" resultMap="UserDto">
+        <include refid="userSelect"/>
+        WHERE u.login=#{login}
+    </select>
+    <select id="getUserByEmail" resultMap="UserDto">
+        <include refid="userSelect"/>
+        WHERE u.email=#{email}
+    </select>
+    <insert id="logActivity">
+        INSERT INTO flipbrain.audit_logs
+        (app_user,activity, client_ip)
+        VALUES(#{appUser}, #{activity}, #{clientIp});
+    </insert>
+    <!-- CRUD for content -->
+    <insert id="insertContent" useGeneratedKeys="true"
+            keyProperty="contentId">
+        INSERT INTO flipbrain.content
+        (content_type,url,title,user_id,is_private,description,tags)
+        VALUES(#{contentType}, #{url}, #{title}, #{userId}, #{isPrivate},
+        #{description},#{tags});
+    </insert>
+    <update id="updateContent">
+        UPDATE flipbrain.content
+        SET content_type=#{contentType},url=#{url},title=#{title}, tags=#{tags},
+        user_id=#{userId},is_private=#{isPrivate},description=#{description}
+        WHERE content_id=#{contentId} AND user_id=#{userId};
+    </update>
+    <delete id="deleteContent">
+        DELETE FROM flipbrain.content WHERE content_id=#{contentId} AND user_id=#{userId};
+    </delete>
+    <select id="getContentsForUser" resultMap="ContentDto">
+        select * from flipbrain.content c where c.user_id=#{userId}
+        <if test="q != null">
+            AND c.title LIKE CONCAT('%', #{q}, '%')
+        </if>
+    </select>
+
+    <!-- CRUD for trails -->
+    <sql id="trailSelect">
+        (select max(i.item_id) as item_id, i.url, t.* from flipbrain.trails t
+        join
+        (select c.url, ii.item_id, ii.trail_id, c.content_type
+        from flipbrain.trail_items ii
+        left join flipbrain.content c on c.content_id=ii.content_id
+        ) as i on i.trail_id = t.trail_id AND i.content_type='V'
+        group by t.trail_id)
+    </sql>
+    <insert id="insertTrailSubs" useGeneratedKeys="true"
+            keyProperty="subsId">
+        INSERT INTO flipbrain.subscriptions (user_id, trail_id)
+        VALUES (#{userId}, #{trailId});
+    </insert>
+    <delete id="deleteTrailSubs">
+        DELETE FROM flipbrain.subscriptions WHERE subsc_id=#{subsId} AND user_id=#{userId};
+    </delete>
+    <select id="getSubsForUser" resultMap="TrailSubsDto">
+        select s.subsc_id, t.* from flipbrain.subscriptions s
+        join <include refid="trailSelect"/> t on t.trail_id=s.trail_id
+        where s.user_id=#{userId}
+    </select>
+    <select id="getTrailCommentsCount" resultType="int">
+        select count(*) count from flipbrain.comments c
+        where c.item_id in (
+        select ti.item_id from flipbrain.trail_items ti where ti.trail_id=#{trailId});
+    </select>
+    <select id="getTrailViewsCount" resultType="int">
+        SELECT count(*) count FROM flipbrain.analytics a
+        WHERE a.trail_id=#{trailId} and action = 'VT';
+    </select>
+    <select id="getTrailSubsCount" resultType="int">
+        select count(*) count from flipbrain.subscriptions s
+        where s.trail_id=#{trailId};
+    </select>
+    <insert id="insertTrail" useGeneratedKeys="true"
+            keyProperty="trailId">
+        INSERT INTO flipbrain.trails(title,is_private,user_id,tags)
+        VALUES(#{title}, #{isPrivate}, #{createdBy}, #{tags});
+    </insert>
+    <update id="updateTrail">
+        UPDATE flipbrain.trails
+        SET title = #{title}, is_private = #{isPrivate}, tags=#{tags}
+        WHERE trail_id=#{trailId}
+    </update>
+    <delete id="deleteTrail">
+        DELETE FROM flipbrain.trails WHERE trail_id=#{trailId} AND user_id=#{createdBy}
+    </delete>
+    <select id="getTrailsForUser" resultMap="TrailDto">
+        select t.* from <include refid="trailSelect"/> t where t.user_id=#{createdBy}
+    </select>
+    <select id="getPublicTrails" resultMap="TrailDto">
+        select t.* from <include refid="trailSelect"/> t where t.is_private=0
+        LIMIT #{offset},#{rows}
+    </select>
+    <select id="getPublicTrailsCount" resultType="int">
+        select count(*) from <include refid="trailSelect"/> t where t.is_private=0
+    </select>
+    <select id="searchTrails" resultMap="TrailDto">
+        select * from <include refid="trailSelect"/> as aa
+        where aa.trail_id in
+        (
+        select distinct ti.trail_id from flipbrain.trail_items ti
+        where ti.content_id in
+        (
+        select c.content_id from flipbrain.content c
+        WHERE MATCH (c.title, c.description, c.tags)
+        AGAINST (#{kw} IN BOOLEAN MODE)
+        ) UNION
+        SELECT t.trail_id FROM flipbrain.trails t
+        WHERE MATCH (t.title, t.tags)
+        AGAINST (#{kw} IN BOOLEAN MODE)
+        );
+    </select>
+    <insert id="insertTrailItem" useGeneratedKeys="true"
+            keyProperty="itemId">
+        INSERT INTO flipbrain.trail_items(trail_id, content_id, seq_no)
+        VALUES(#{trailId}, #{content.contentId}, #{seqNo});
+    </insert>
+    <update id="updateTrailItem">
+        UPDATE flipbrain.trail_items SET seq_no=#{seqNo} WHERE item_id=#{itemId}
+    </update>
+    <delete id="deleteTrailItem">
+        DELETE FROM flipbrain.trail_items WHERE item_id=#{itemId}
+    </delete>
+    <select id="getVideosForTrail" resultMap="TrailItemDto">
+        select * from flipbrain.trail_items t
+        join flipbrain.content v on v.content_id=t.content_id
+        where t.trail_id=#{trailId} AND v.content_type='V'
+        order by t.seq_no
+    </select>
+    <select id="getResourcesForTrail" resultMap="TrailItemDto">
+        select * from flipbrain.trail_items t
+        join flipbrain.content v on v.content_id=t.content_id
+        where t.trail_id=#{trailId} AND v.content_type='R'
+    </select>
+    <select id="getUserTrailById" resultMap="TrailDto">
+        select t.* from <include refid="trailSelect"/> t
+        where t.trail_id=#{trailId} and t.user_id=#{createdBy}
+    </select>
+    <select id="getTrailById" resultMap="TrailDto">
+        select t.* from <include refid="trailSelect"/> t
+        where t.trail_id=#{trailId}
+    </select>
+    <insert id="insertComment" useGeneratedKeys="true"
+            keyProperty="commentId">
+        INSERT INTO flipbrain.comments
+        (author, comment, in_reply_to,item_id, level, subject, tags)
+        VALUES (#{author}, #{comment}, #{inReplyTo}, #{trailItemId},
+        #{level}, #{subject}, #{tags});
+    </insert>
+    <update id="updateComment">
+        UPDATE flipbrain.comments
+        SET  comment = #{comment}, subject=#{subject}, tags=#{tags}
+        WHERE comment_id = #{commentId} and author=#{author};
+    </update>
+    <delete id="deleteComment">
+        DELETE FROM flipbrain.comments
+        WHERE comment_id = #{commentId} and author=#{author};
+    </delete>
+    <select id="getCommentsForTrailItem" resultMap="CommentDto">
+        SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) author_name
+        FROM flipbrain.comments c
+        JOIN flipbrain.users u on u.user_id=c.author
+        WHERE c.item_id=#{trailItemId}
+        order by level asc, upd_ts desc;
+    </select>
+    <select id="searchComments" resultMap="CommentDto">
+        SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) author_name
+        FROM flipbrain.comments c
+        JOIN flipbrain.users u on u.user_id=c.author
+        <where>
+            <if test="query != null and query != ''">
+                CONCAT(c.subject, ' ', c.comment) LIKE CONCAT('%', #{query}, '%')
+            </if>
+            <if test="notReplied">
+                AND c.level=0 AND
+                c.comment_id NOT IN 
+                (SELECT DISTINCT in_reply_to FROM
+                flipbrain.comments WHERE in_reply_to IS NOT NULL
+                <choose>
+                    <when test="searchAll">
+                        AND trail_id=#{trailId}
+                    </when>
+                    <otherwise>
+                        AND item_id=#{itemId}
+                    </otherwise>
+                </choose>
+                )
+            </if>
+            <choose>
+                <when test="searchAll">
+                    AND c.trail_id=#{trailId}
+                </when>
+                <otherwise>
+                    AND c.item_id=#{itemId}
+                </otherwise>
+            </choose>
+            <if test="postedAfter != null">
+                AND c.ins_ts &gt;= #{postedAfter}
+            </if>
+            <if test="postedBefore != null">
+                AND c.ins_ts &lt;= #{postedBefore}
+            </if>
+        </where>
+        order by level asc, upd_ts desc;
+    </select>
+    <!-- Assessment CRUD -->
+    <select id="lookupQuestions" resultMap="QuestionDto">
+        SELECT * FROM flipbrain.questions q
+        WHERE author=#{author} AND
+        CONCAT(q.title, ' ', q.question) LIKE CONCAT('%', #{query}, '%')
+    </select>
+    <select id="getQuestionsByUser" resultMap="QuestionDto">
+        SELECT * FROM flipbrain.questions where author=#{author};
+    </select>
+    <select id="getQuestionById" resultMap="QuestionDto">
+        SELECT * FROM flipbrain.questions where question_id=#{questionId};
+    </select>
+    <select id="getAnsOptsForView" resultMap="ViewableAnswerOptionDto">
+        SELECT * FROM flipbrain.answer_options where question_id=#{value};
+    </select>
+    <select id="getAnsOptsForQuestion" resultMap="AnswerOptionDto">
+        SELECT * FROM flipbrain.answer_options where question_id=#{value};
+    </select>
+    <insert id="insertQuestion" useGeneratedKeys="true"
+            keyProperty="questionId">
+        INSERT INTO flipbrain.questions(type, question, feedback, author, title)
+        VALUES (#{type}, #{question}, #{feedback}, #{author}, #{title});
+    </insert>
+    <update id="updateQuestion">
+        UPDATE flipbrain.questions
+        SET  type = #{type}, question=#{question}, feedback=#{feedback}, title=#{title}
+        WHERE question_id = #{questionId} and author=#{author};
+    </update>
+    <delete id="deleteQuestion">
+        DELETE FROM flipbrain.answer_options
+        WHERE question_id = #{questionId};
+        DELETE FROM flipbrain.questions
+        WHERE question_id = #{questionId} and author=#{author};
+    </delete>
+    <insert id="insertAnswerOption" useGeneratedKeys="true"
+            keyProperty="answerOptId">
+        INSERT INTO flipbrain.answer_options(question_id, answer, author, is_correct)
+        VALUES (#{questionId}, #{answer}, #{author}, #{correct});
+    </insert>
+    <update id="updateAnswerOption">
+        UPDATE flipbrain.answer_options
+        SET question_id=#{questionId}, answer=#{answer}, author=#{author},
+        is_correct=#{correct}
+        WHERE ans_opt_id = #{answerOptId} and author=#{author};
+    </update>
+    <delete id="deleteAnswerOption">
+        DELETE FROM flipbrain.answer_options
+        WHERE ans_opt_id = #{answerOptId} and author=#{author};
+    </delete>
+    <insert id="insertAssessmentQuestion" useGeneratedKeys="true"
+            keyProperty="assessQuestId">
+        INSERT INTO flipbrain.assessment_questions(assessment_id, question_id, points)
+        VALUES (#{assessId}, #{questionId}, #{points});
+    </insert>
+    <update id="updateAssessmentQuestion">
+        UPDATE flipbrain.assessment_questions
+        SET assessment_id=#{assessId}, question_id=#{questionId}, points=#{points}
+        WHERE assess_question_id = #{assessQuestId};
+    </update>
+    <delete id="deleteAssessmentQuestion">
+        DELETE FROM flipbrain.assessment_questions
+        WHERE assess_question_id = #{assessQuestId};
+    </delete>
+    <insert id="insertAssessment" useGeneratedKeys="true"
+            keyProperty="assessId">
+        INSERT INTO flipbrain.assessments(title,description, author,
+        wrong_ans_points,correct_ans_points,randomize_questions,randomize_answers,
+        allotted_minutes, show_score, open_time, close_time, is_published)
+        VALUES(#{title}, #{description}, #{author}, #{wrongAnsPoints},
+        #{correctAnsPoints}, #{randomizeQuestions}, #{randomizeAnswers},
+        #{allottedMinutes}, #{showScore}, #{openTime}, #{closeTime}, #{published}
+        );
+    </insert>
+    <update id="updateAssessment">
+        UPDATE flipbrain.assessments
+        SET title=#{title}, description=#{description}, author=#{author},
+        wrong_ans_points=#{wrongAnsPoints}, correct_ans_points=#{correctAnsPoints},
+        randomize_questions=#{randomizeQuestions},randomize_answers=#{randomizeAnswers},
+        allotted_minutes=#{allottedMinutes}, show_score=#{showScore},
+        open_time=#{openTime}, close_time=#{closeTime}, is_published=#{published}
+        WHERE assessment_id=#{assessId};
+    </update>
+    <delete id="deleteAssessment">
+        DELETE FROM flipbrain.assessment_questions
+        WHERE assessment_id=#{assessId};
+        DELETE FROM flipbrain.assessments
+        WHERE assessment_id=#{assessId};
+    </delete>
+    <insert id="insertTrailAssessment" useGeneratedKeys="true"
+            keyProperty="trailAssessId">
+        INSERT INTO flipbrain.trail_assessments(trail_id, assessment_id)
+        VALUES(#{trailId}, #{assessId});
+    </insert>
+    <select id="getAssessmentsForTrail" resultMap="TrailAssessmentDto">
+        select a.*, t.trail_id from flipbrain.trails t
+        join flipbrain.trail_assessments ta on ta.trail_id=t.trail_id
+        join flipbrain.assessments a on a.assessment_id=ta.assessment_id
+        where t.trail_id=#{tid}
+    </select>
+    <delete id="deleteTrailAssessment">
+        DELETE FROM flipbrain.trail_assessments
+        WHERE trail_assess_id=#{trailAssessId};
+    </delete>
+    <select id="lookupAssessments" resultMap="AssessmentDto">
+        SELECT * FROM flipbrain.assessments a
+        WHERE a.author=#{author} AND a.title LIKE CONCAT('%', #{query}, '%');
+    </select>
+    <select id="getAssessmentById" resultMap="AssessmentDto">
+        SELECT * FROM flipbrain.assessments a WHERE a.assessment_id=#{assessId}
+    </select>
+    <select id="getAssessmentForTakingId" resultMap="AssessmentForTaking">
+        SELECT * FROM flipbrain.assessments a WHERE a.assessment_id=#{assessId}
+    </select>
+    <select id="getAssessmentsByUserId" resultMap="AssessmentDto">
+        SELECT * FROM flipbrain.assessments a WHERE a.author=#{author}
+    </select>
+    <select id="getSubmissionsByUserId" resultMap="AssessmentSubmissionDto">
+        select s.*, a.*, CONCAT(u.first_name, ' ', u.last_name) student_name
+        from flipbrain.assessment_submissions s
+        join flipbrain.users u on u.user_id=s.student
+        join flipbrain.assessments a on a.assessment_id=s.assessment_id
+        where s.student=#{student}
+    </select>
+    <select id="getSubmissionsForAssessment" resultMap="AssessmentSubmissionDto">
+        select s.*, a.*, CONCAT(u.first_name, ' ', u.last_name) student_name
+        from flipbrain.assessment_submissions s
+        join flipbrain.users u on u.user_id=s.student
+        join flipbrain.assessments a on a.assessment_id=s.assessment_id
+        where s.assessment_id=#{assessId}
+    </select>
+    <select id="getQuestionsForAssessment" resultMap="AssessmentQuestionDto">
+        SELECT * FROM flipbrain.assessment_questions aq
+        JOIN flipbrain.questions q on q.question_id=aq.question_id
+        WHERE aq.assessment_id=#{assessId}
+    </select>
+    <!-- Assessment submission responses -->
+    <select id="getAssessmentSubmissionById" resultMap="AssessmentSubmissionDto">
+        select * from flipbrain.assessment_submissions s
+        join flipbrain.assessments a on a.assessment_id=s.assessment_id
+        where s.submission_id=#{submissionId}
+    </select>
+    <select id="getResponsesForSubmission" resultMap="SubmissionResponseDto">
+        select * from flipbrain.submission_responses r
+        where r.submission_id=#{submissionId}
+    </select>
+    <insert id="insertAssessmentSubmission" useGeneratedKeys="true"
+            keyProperty="submissionId">
+        INSERT INTO flipbrain.assessment_submissions(student, assessment_id, is_draft)
+        VALUES(#{student}, #{assessId}, #{draft});
+    </insert>
+    <update id="updateAssessmentSubmission">
+        UPDATE flipbrain.assessment_submissions
+        SET is_draft=#{draft}, submitted_on=CURRENT_TIMESTAMP()
+        WHERE submission_id=#{submissionId} AND student=#{student} AND is_draft=1;
+    </update>
+    <delete id="deleteAssessmentSubmission">
+        DELETE FROM flipbrain.submission_responses
+        WHERE submission_id=#{submissionId};
+        DELETE FROM flipbrain.assessment_submissions
+        WHERE submission_id=#{submissionId} AND student=#{student} AND is_draft=1;
+    </delete>
+    <insert id="insertSubmissionResponse" useGeneratedKeys="true"
+            keyProperty="responseId">
+        INSERT INTO flipbrain.submission_responses(submission_id,
+        assess_question_id, ans_opt_id, response)
+        VALUES(#{submissionId}, #{assessQuestId}, #{answerOptId}, #{response});
+    </insert>
+    <update id="updateSubmissionResponse">
+        UPDATE flipbrain.submission_responses
+        SET assess_question_id=#{assessQuestId},
+        ans_opt_id=#{answerOptId}, response=#{response}
+        WHERE response_id=#{responseId};
+    </update>
+    <delete id="deleteSubmissionResponse">
+        DELETE FROM flipbrain.submission_responses
+        WHERE response_id=#{responseId};
+    </delete>
+    <delete id="deleteResponsesForSubmission">
+        DELETE FROM flipbrain.submission_responses
+        WHERE submission_id=#{submissionId};
+    </delete>
+</mapper>

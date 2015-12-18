@@ -1,0 +1,28 @@
+<div ng-controller="AppCtrl">
+    <div ng-include="'./Views/Partials/header.html'"></div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading nav">
+                <span class="navbar-left sec-heading">My Subscriptions</span>
+                <span class="navbar-right"><a class="btn btn-primary btn-xs" href="#/NewSubs">Add New</a></span>
+            </div>
+            <div class="panel-body">
+                <div ng-show="Shared.Subscriptions.length === 0" class="center2">
+                    <h4>You have not subscribed to any trails!</h4>
+                </div>
+                <div class="row">
+                    <div ng-repeat="s in Shared.Subscriptions" class="col-md-4">
+                        <div class="thumbnail">
+                            <a href="#/ViewTrail/{{s.trailId}}">
+                                <img src="{{RootModel.getThumbnailUrl(s.trail.thumbnailUrl)}}" alt="{{s.trail.title}}">
+                                <h4>{{s.trail.title}}</h4>
+                            </a>
+                            <span class="label label-info">{{s.trail.tags}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>

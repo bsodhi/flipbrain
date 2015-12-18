@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss} %5p %c{1} - %m%n"/>
+        </layout>
+    </appender>
+    <appender name="R" class="org.apache.log4j.RollingFileAppender"> 
+        <param name="File" value="sreg.log" />
+        <param name="MaxFileSize" value="500KB"/>
+        <!-- Keep one backup file -->
+        <param name="MaxBackupIndex" value="4"/>
+        <layout class="org.apache.log4j.PatternLayout"> 
+            <param name="ConversionPattern" value="%t %-5p %c{2} - %m%n"/> 
+        </layout> 
+    </appender>
+    <category name="org.apache.http">  
+        <priority value="DEBUG" />  
+        <appender-ref ref="R" /> 
+        <appender-ref ref="consoleAppender" /> 
+    </category>
+    <category name="in.flipbrain">  
+        <priority value="DEBUG" />  
+        <appender-ref ref="R" /> 
+        <appender-ref ref="consoleAppender" /> 
+    </category>
+    <root>  
+        <priority value="error" />  
+        <appender-ref ref="R" /> 
+        <appender-ref ref="consoleAppender" />  
+    </root>
+</log4j:configuration>

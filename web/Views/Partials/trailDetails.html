@@ -1,0 +1,122 @@
+<div ng-controller="TrailDetailsCtrl">
+    <div ng-include="'./Views/Partials/header.html'"></div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading nav">
+                <span class="navbar-left sec-heading2">Trail Details</span>
+                <span class="navbar-right">
+                    <button class="btn btn-primary btn-xs" ng-click="saveTrail()">Save</button>
+                    <button class="btn btn-warning btn-xs" ng-click="deleteTrail()">Delete</button>
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form class="form-inline col-md-8">
+                        <div class="form-group">
+                            <label for="title" class="control-label">Title</label>
+                            <input id="title" ng-model="Model.Trail.title" type="text" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="tags" class="control-label">Tags</label>
+                            <input id="tags" ng-model="Model.Trail.tags" type="text" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-inline">
+                                <input ng-model="Model.Trail.isPrivate" type="checkbox" /> Private
+                            </label>
+                        </div>
+                    </form>
+                    <div class="form-group col-md-4">
+                        <input type="text" ng-model="Model.temp.selContent"
+                               placeholder="Lookup content to be added"
+                               typeahead="c.title for c in getContentsForUser($viewValue)"
+                               typeahead-on-select="addContentToTrail($item, $model, $label)"
+                               class="form-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <span class='sec-heading'>Videos</span>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Display Seq#</th>
+                                        <th>Title</th>
+                                        <th>Tags</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody html-sortable="sortableOptions"
+                                       html-sortable-callback="sortableCallback"
+                                       ng:model="Model.Trail.videos">
+                                    <tr ng-repeat="t in Model.Trail.videos">
+                                        <td><span class="drag-handle glyphicon glyphicon-move"></span> {{t.seqNo}}</td>
+                                        <td>{{t.content.title}}</td>
+                                        <td>{{t.content.tags}}</td>
+                                        <td><input type="checkbox" class="checkbox" ng-model="t.deleted" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <span class='sec-heading'>Resources</span>
+                            <p ng-show="Model.Trail.resources.length === 0">None available</p>
+                            <table class="table table-hover" ng-show="Model.Trail.resources.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th>S#</th>
+                                        <th>Title</th>
+                                        <th>Tags</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="t in Model.Trail.resources">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{t.content.title}}</td>
+                                        <td>{{t.content.tags}}</td>
+                                        <td><input type="checkbox" class="checkbox" ng-model="t.deleted" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="panel panel-info">
+                            <span class='sec-heading'>Assessments available</span>
+                            <div class="right2"><button class="btn btn-primary btn-xs" ng-click="toggleTALookup()">Add</button></div>
+                            <div ng-show="Model.temp.showTALookup" class="animate-show">
+                                <input type="text" ng-model="Model.temp.selAssessment"
+                                       placeholder="Lookup assessment to be added"
+                                       typeahead="c.title for c in lookupAssessments($viewValue)"
+                                       typeahead-on-select="addAssessmentToTrail($item, $model, $label)"
+                                       class="form-control"/>
+                            </div>
+                            <p ng-show="Model.Trail.assessments.length === 0">None available</p>
+                            <table class="table table-hover" ng-show="Model.Trail.assessments.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th>S#</th>
+                                        <th>Title</th>
+                                        <th>Opens on</th>
+                                        <th>Due by</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="a in Model.Trail.assessments">
+                                        <td>{{$index + 1}}</td>
+                                        <td><a href="#/Assessment/{{a.assessId}}">{{a.title}}</a></td>
+                                        <td>{{a.openTime|date:'medium'}}</td>
+                                        <td>{{a.closeTime|date:'medium'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>
