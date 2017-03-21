@@ -1,0 +1,174 @@
+<div ng-controller="AssessmentCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <span class="h3">Assessment details</span>
+        <div class="row navbar-right">
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+            <a href="#/MyContent" class="btn btn-default">Cancel</a>
+        </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input id="title" type="text" class="form-control" ng-model="A.title"/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="desc">Description</label>
+                        <input id="desc" type="text" class="form-control" ng-model="A.description"/>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="openDt">Open date</label>
+                        <p class="input-group">
+                            <input id="openDt" type="text" class="form-control"
+                                   ng-model="A.openTime" ng-required="true"/>
+                            <!--<input id="openDt" type="text" class="form-control"-->
+                                   <!--datepicker-popup="dd/MM/yyyy" ng-model="A.openTime"-->
+                                   <!--max-date="'2018-06-22'" is-open="odOpen"-->
+                                   <!--ng-required="true" close-text="Close" />-->
+                            <!--<span class="input-group-btn">-->
+                                <!--<button type="button" class="btn btn-default" ng-click="open($event, 'OD')"><i class="glyphicon glyphicon-calendar"></i></button>-->
+                            <!--</span>-->
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="closeDt">Close date</label>
+                        <p class="input-group">
+                            <!--<input id="closeDt" type="text" class="form-control"-->
+                                   <!--datepicker-popup="dd/MM/yyyy" ng-model="A.closeTime"-->
+                                   <!--max-date="'2018-06-22'" is-open="cdOpen"-->
+                                   <!--ng-required="true" close-text="Close" />-->
+                            <input id="closeDt" type="text" class="form-control"
+                                   ng-model="A.closeTime" ng-required="true"/>
+                            <!--<span class="input-group-btn">-->
+                                <!--<button type="button" class="btn btn-default" ng-click="open($event, 'CD')"><i class="glyphicon glyphicon-calendar"></i></button>-->
+                            <!--</span>-->
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="allottedMin">Allotted time (minutes)</label>
+                        <input id="allottedMin" type="number" class="form-control" ng-model="A.allottedMinutes"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+<!--                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="correctAnsPoints">Points per correct answer</label>
+                        <input id="correctAnsPoints" type="number" class="form-control" ng-model="A.correctAnsPoints"/>
+                    </div>
+                </div>-->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="wrongAnsPoints">Points per wrong answer</label>
+                        <input id="wrongAnsPoints" type="number" class="form-control"
+                               ng-model="A.pointsForWrongAns" placeholder="e.g. -3"/>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>
+                            Randomize questions<br/>
+                            <input type="checkbox" ng-model="A.randomizeQuestions"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>
+                            Randomize answers<br/>
+                            <input type="checkbox" ng-model="A.randomizeAnswers"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>
+                            Show score on submission<br/>
+                            <input type="checkbox" ng-model="A.showScore"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>
+                            Published <br/>
+                            <input type="checkbox" ng-model="A.published"/>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="h4">Questions</span>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>S#</th>
+                                <th>Question title</th>
+                                <th>Type</th>
+                                <th>Max. points</th>
+                                <!--<th><button ng-click="toggleLookup()"-->
+                                            <!--class="btn btn-primary btn-xs">Add</button></th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--<tr ng-show="showLookup" class="animate-show">-->
+                                <!--<td colspan="4">-->
+                                    <!--<input class="form-control" ng-model="lookupQuery"-->
+                                           <!--placeholder="Type question title to lookup"-->
+                                           <!--typeahead="q.title for q in lookupQuestion($viewValue) | filter:$viewValue | limitTo:10"-->
+                                           <!--typeahead-on-select="setQuestion($item, $model, $label)"/>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                            <tr ng-repeat="aq in A.questions">
+                                <td>{{$index + 1}}</td>
+                                <td><a href="#/Question/{{aq.questionId}}">{{aq.title}}</a></td>
+                                <td>{{Shared.QTypes[aq.type]}}</td>
+                                <td>
+                                    <input ng-model="aq.points" type="number" class="form-control"/>
+                                </td>
+                            </tr>
+                            <tr ng-show="A.questions === undefined || A.questions.length === 0">
+                                <td colspan="4">No data available.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <span class="h4">Submissions</span>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>S#</th>
+                                <th><a href="" ng-click="pred = 'studentName';
+                                        reverse = !reverse;">Student</a></th>
+                                <th><a href="" ng-click="pred = 'submittedOn';
+                                        reverse = !reverse;">Submitted on</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="s in A.submissions| orderBy:pred:reverse">
+                                <td>{{$index + 1}}</td>
+                                <td>{{s.studentName}}</td>
+                                <td><a href="#/AssessmentResult/{{s.submissionId}}">{{s.submittedOn| date:'medium'}}</a></td>
+                            </tr>
+                            <tr ng-show="A.submissions === undefined || A.submissions.length === 0">
+                                <td colspan="3">No data available.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>

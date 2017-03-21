@@ -1,0 +1,40 @@
+#application: flipbrain-gae
+#version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+inbound_services:
+- warmup
+
+handlers:
+
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /_ah/warmup
+  script: mainapp.app
+  login: admin
+
+- url: /(user|trail|assess)/.*
+  script: mainapp.app
+
+- url: /
+  static_files: index.html
+  upload: index.html
+
+#- url: /web/partials
+#  static_files: web/partials/.*
+#  upload: web/partials/.*
+
+#- url: /web/assets
+#  static_files: web/assets/(.*)/(.*)/(.*)
+#  upload: web/assets/(.*)/(.*)/(.*)
+
+- url: /web
+  static_files: web/(.*)/(.*)/(.*)/(.*)
+  upload: web/(.*)/(.*)/(.*)/(.*)
+
+- url: /web
+  static_dir: web

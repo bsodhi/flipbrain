@@ -1,0 +1,32 @@
+<div ng-controller="AssessmentViewCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <span class="h3">{{A.title}}</span>
+        <div class="panel page-header">
+            <span ng-show="isSubmitted()" class="h4">
+                You have already submitted this assessment!</span>
+            <p>Only your first submission will be considered for any grading.
+            <b>Allotted time is {{A.allottedMinutes}} minutes for {{A.questions.length}} questions.</b> You started at <b>{{A.startTime|date:'medium'}}</b>.
+            Submission of this assessment for earning any grades closes on <b>{{A.closeTime| date:'medium'}}</b>. Late submission may be always open.
+            </p>
+            <div style="text-align: right">
+                <button class="btn btn-info" ng-disabled="isSubmitted()" ng-click="save()">Save</button>
+                <button class="btn btn-primary" ng-disabled="isSubmitted()" ng-click="save(true)">Submit</button>
+            </div>
+        </div>
+        <div>
+            <ul class="list-group" ng-repeat="q in A.questions">
+                <li class="list-group-item list-group-item-info">Q.{{$index + 1}} <span class="badge">{{q.points}} points.</span>
+                    <p ng-bind-html="q.question"></p></li>
+                <li class="list-group-item" ng-repeat="opt in q.answerOptions">
+                    <label ng-show="q.type === 'MCMA' || q.type === 'MCSA'">
+                        <input ng-disabled="isSubmitted()" type="checkbox" ng-model="opt.marked"/> {{opt.answer}}
+                    </label>
+                    <span ng-show="q.type === 'FTXT'">
+                        <textarea ng-disabled="isSubmitted()" ng-model="opt.response"></textarea>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div> <!-- /container -->
+</div>

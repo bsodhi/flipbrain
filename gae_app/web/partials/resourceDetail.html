@@ -1,0 +1,33 @@
+<div id="resDetails">
+    <div class="panel panel-info">
+        <div class="panel-heading">Add Resource</div>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="resURLs" class="control-label">URL</label>
+                <input id="resURLs" ng-model="Model.temp.resource.url" class="form-control">
+                </input>
+            </div>
+            <div class="form-group">
+                <label for="resTitle" class="control-label">Title</label>
+                <input id="resTitle" ng-model="Model.temp.resource.title" class="form-control">
+                </input>
+            </div>
+            <div class="form-group">
+                <label for="resDesc" class="control-label">Description</label>
+                <input id="resDesc" ng-model="Model.temp.resource.description" class="form-control">
+                </input>
+            </div>
+            <div class="form-group">
+                <label for="resTags" class="control-label">Tags</label>
+                <input id="resTags" type="text" ng-model="Model.temp.resource.tags" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="resPvt" class="control-label">Private</label>
+                <input id="resPvt" ng-model="Model.temp.resource.isPrivate" type="checkbox" />
+                &nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-default btn-xs" ng-click="toggleRESLookup()">Close</button>
+                <button type="submit" class="btn btn-primary btn-xs" ng-click="addResourceToTrail()">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

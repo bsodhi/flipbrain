@@ -1,0 +1,71 @@
+<div ng-controller="QuestionCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <span class="h3">Question details</span>
+        <div class="well">
+            <div class="row navbar-right">
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+                <a href="#/MyContent" class="btn btn-default">Cancel</a>
+                <a href="#/Question" class="btn btn-default">Add New</a>                
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select class="form-control" ng-model="Q.type">
+                            <option value="MCMA">Multiple choice multiple answer</option>
+                            <option value="MCSA">Multiple choice single answer</option>
+                            <option value="FTXT">Free text answer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" class="form-control" ng-model="Q.title"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Question *</label>
+                        <div text-angular ng-model="Q.question"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Feedback</label>
+                        <textarea rows="4" cols="40" class="form-control" ng-model="Q.feedback"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-xs btn-primary" ng-click="addOpt()">Add answer</button>
+            </div>
+            <div class="row">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S#</th>
+                            <th>Answer option</th>
+                            <th>Is correct?</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="a in Q.answerOptions">
+                            <td>{{$index + 1}}</td>
+                            <td><textarea class="form-control" ng-model="a.answer"></textarea></td>
+                            <td><input class="checkbox" type="checkbox" ng-model="a.correct"/></td>
+                            <td><input class="checkbox" type="checkbox" ng-model="a.deleted"/></td>
+                        </tr>
+                        <tr ng-show="Q.answerOptions.length === 0">
+                            <td colspan="4">No options available.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>

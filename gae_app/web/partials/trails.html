@@ -1,0 +1,76 @@
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <span class="navbar-right">
+            <!--<a class="btn btn-primary btn-xs" href="#/Trail">New trail</a>-->
+            <button type="button" class="btn btn-primary btn-xs"
+                    data-toggle="modal" data-target="#ytrailModal">
+                Create from YouTube Videos
+            </button>
+    </span>
+    <div class="panel-body">
+        <!-- Table -->
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>S#</th>
+                    <th><a href="" ng-click="Sort.pred5 = 'title';
+                        Sort.rev5 = !Sort.rev5;">Title</a></th>
+                    <th><a href="" ng-click="Sort.pred5 = 'isPrivate';
+                        Sort.rev5 = !Sort.rev5;">Private</a></th>
+                    <th><a href="" ng-click="Sort.pred5 = 'updTs';
+                        Sort.rev5 = !Sort.rev5;">Created on</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="t in Model.PF.trails| orderBy:Sort.pred5:Sort.rev5">
+                    <td>{{$index + 1}}</td>
+                    <td><a href="#/Trail/{{t.trailId}}">{{t.title}}</a></td>
+                    <td>{{t.isPrivate?'Yes':'No'}}</td>
+                    <td>{{t.updTs|date:'medium'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- YouTube content import -->
+<div class="modal fade" id="ytrailModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="RootModel.modalStatus = undefined;">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="contentModalLabel">Create trail from YouTube videos/playlist</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-hide="RootModel.modalStatus === undefined" class="alert alert-info" role="alert">{{RootModel.modalStatus}}</div>
+                <form>
+                    <div class="form-group">
+                        <label for="ytIsPL" class="control-label">Playlist?</label>
+                        <input id="ytIsPL" ng-model="Model.temp.YT.isPL" type="checkbox" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ytURLs" class="control-label">YouTube playlist ID or video URLs (one per line)</label>
+                        <textarea id="ytURLs" rows="5" ng-model="Model.temp.YT.resource" class="form-control">
+                        </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ytTitle" class="control-label">Title</label>
+                        <input id="ytTitle" type="text" ng-model="Model.temp.YT.title" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="ytTags" class="control-label">Tags</label>
+                        <input id="ytTags" type="text" ng-model="Model.temp.YT.tags" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="ytPvt" class="control-label">Private</label>
+                        <input id="ytPvt" ng-model="Model.temp.YT.isPrivate" type="checkbox" />
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="RootModel.modalStatus = undefined;">Close</button>
+                        <button type="submit" class="btn btn-primary" ng-click="addYTrail()" >Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

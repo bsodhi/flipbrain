@@ -1,0 +1,70 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <img id="ajax-loader" src="web/assets/img/ajax-loader.gif" class="ajax-loader"/>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/Index">
+                <span style="color: #428bca">flip</span><span id="ajax-waiting">BRAIN</span>
+                <span class="superscript">(beta)</span>
+            </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <div ng-show="{{Shared.User.loggedIn}}">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle"
+                           data-toggle="dropdown" role="button">My Learning
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#/MyAssessments">Assessments</a></li>
+                            <!--<li><a href="#/Subs">Subscriptions</a></li>-->
+                            <li role="presentation" class="divider"></li>
+                            <li><a href="#/MyContent">Content added</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" ng-show="{{Login.isAdmin}}">
+                        <a href="#" class="dropdown-toggle"
+                           data-toggle="dropdown" role="button">Admin Tasks
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#/Task-1">Task-1</a></li>
+                            <li><a href="#/Task-2">Task-2</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="navbar-text navbar-right">Welcome {{Shared.User.firstName + " " + Shared.User.lastName}}
+                    <a href="#/Profile/{{Shared.User.userId}}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                    | <button ng-click="signOut()" class="btn btn-link btn-xs"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></button>
+                </span>
+            </div>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="RootModel.q" placeholder="Search ...">
+                </div>
+                <button type="submit" ng-click="RootModel.search()" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+            </form>
+            <ul class="nav nav-pills navbar-right">
+                <li role="presentation"><a href="#/Why">Why flipBRAIN?</a></li>
+                <li ng-show="!Shared.User.loggedIn" role="presentation">
+                    <span ng-controller="LoginCtrl">
+                    	<a href="#/Login">SignIn</a>
+                    	<!-- 
+                        <a href="">
+                            <img ng-click="gapiAuth2SignIn()" src="web/assets/img/Blue_signin_Long_normal_32dp_v3.png"/>
+                        </a>
+                         -->
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="statusmsg" class="alert alert-warning alert-dismissible" role="alert"
+     ng-show="StatusMessage !== undefined" ng-click="hideStatus()">
+    {{StatusMessage}}
+</div>

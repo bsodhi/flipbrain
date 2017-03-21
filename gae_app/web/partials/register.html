@@ -1,0 +1,75 @@
+<div ng-controller="ProfileCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading nav">
+                <span class="navbar-left">My Profile</span>
+            </div>
+            <div class="panel-body">
+                <div ng-show="formErrors.length > 0">
+                    Please fix the following errors before submitting:
+                    <ul ng-repeat="e in formErrors">
+                        <li>{{e}}</li>
+                    </ul>
+                </div>
+                <form name="regForm" novalidate>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input name="email" ng-model="Reg.email" type="text" placeholder="Email" class="form-control" required>
+                    </div>
+                    <div class="form-group" ng-show="Reg.userId > 0">
+                        <label>
+                            <input name="changePassword" ng-model="Reg.changePassword"
+                                   type="checkbox"/> Change password
+                        </label>
+                    </div>
+                    <div class="form-group" ng-show="Reg.userId === undefined || Reg.changePassword">
+                        <label for="password">Password
+                            <span ng-show="Reg.changePassword"> (old)</span> *</label>&nbsp;&nbsp;
+                        <input id="password" name="password" ng-model="Reg.password" 
+                               type="password" placeholder="Password" required class="form-control">
+                    </div>
+                    <div class="form-group" ng-show="Reg.changePassword">
+                        <label for="newPassword" >New password *</label>
+                        <input ng-model="Reg.newPassword" type="password" required 
+                               class="form-control" id="newPassword" placeholder="New password"/>
+                    </div>
+                    <div class="form-group" ng-show="Reg.userId === undefined || Reg.changePassword">
+                        <label for="password2" >Retype <span ng-show="Reg.changePassword">new</span> password</label>
+                        <input ng-model="Reg.password2" type="password" required
+                               class="form-control" id="password2" placeholder="Retype password"/>
+                    </div>
+                    <div class="form-group">
+                        <label>First name *</label>
+                        <input name="firstName" ng-model="Reg.firstName" type="text" placeholder="First name" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Last name *</label>
+                        <input name="lastName" ng-model="Reg.lastName" type="text" placeholder="Last name" required class="form-control">
+                    </div>
+                    <!--
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="form-group">
+                            <label>
+                                <input name="gender" ng-model="Reg.gender" type="radio" value="M"> Male
+                            </label>
+                            <label>
+                                <input name="gender" ng-model="Reg.gender" type="radio" value="F"> Female
+                            </label>
+                            <label>
+                                <input name="gender" ng-model="Reg.gender" type="radio" value="O"> Other
+                            </label>
+                        </div>
+                    </div>
+                    -->
+                    <span class="navbar-right">
+                        <button type="submit" class="btn btn-success" ng-click="saveProfile()">Submit</button>
+                        <a href="#/Index" class="btn btn-default">Cancel</a>
+                    </span>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

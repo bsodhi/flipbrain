@@ -1,0 +1,29 @@
+<div ng-controller="AssessmentResultCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <div>
+            <span class="h2">{{A.title}}</span> <span class="right2 sec-heading">Score: {{A.score}} out of {{A.maxPoints}}.</span>
+            <p ng-show="status === 'partial'">
+                Details of question-wise score will 
+                be accessible only after due date of this assessment.
+            </p>
+        </div>
+        <div>
+            <ul class="list-group" ng-repeat="q in A.questions">
+                <li class="list-group-item list-group-item-info">Q.{{$index + 1}} <span class="badge">{{q.points}} points.</span>
+                    <span ng-bind-html="q.question"></span></li>
+                <li class="list-group-item" ng-repeat="opt in q.answerOptions">
+                    <label ng-show="q.type === 'MCMA' || q.type === 'MCSA'">
+                        <input disabled type="checkbox" ng-model="opt.marked"/> {{opt.answer}}
+                    </label>
+                    <input disabled type="text" ng-model="opt.response" ng-show="q.type === 'FTXT'"/>
+                    &nbsp;&nbsp;
+                    <span ng-show="showAns(q,opt)">
+                        <span class="label label-success">Correct</span>
+                        ({{q.feedback}})
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div> <!-- /container -->
+</div>

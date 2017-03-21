@@ -1,0 +1,82 @@
+<div ng-controller="PortfolioCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <span class="sec-heading right1">Portfolio</span>
+        <div>
+            <tabset>
+                <tab>
+                    <tab-heading><span>Trails ({{Model.PF.trails.length}})</span></tab-heading>
+                    <div ng-include="'web/partials/trails.html'"></div>
+                </tab>
+                <tab>
+                    <tab-heading><span>My question bank ({{Model.PF.questionBank.length}} questions)</span></tab-heading>
+                    <div class="panel panel-default">
+                        <span class="navbar-right">
+                            <a class="btn btn-primary btn-xs" href="#/Question">Add New</a>
+                            <button class="btn btn-primary btn-xs" ng-click="createAssessFromQ()">
+                                Create Assessment From Selected</button>
+                        </span>
+                        <div ng-show="Model.PF.questionBank.length === 0" class="center2">
+                            <h4>You have not authored any questions.</h4>
+                        </div>
+                        <h3 ng-hide="Model.loaded">Loading ...</h3>
+                        <table class="table table-hover" ng-show="Model.PF.questionBank.length > 0">
+                            <thead>
+                                <tr>
+                                    <th>S#</th>
+                                    <th><a href="" ng-click="Sort.pred2 = 'question';
+                                                Sort.rev2 = !Sort.rev2;">Question title</a></th>
+                                    <th><a href="" ng-click="Sort.pred2 = 'type';
+                                                Sort.rev2 = !Sort.rev2;">Type of question</a></th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="q in Model.PF.questionBank| orderBy:Sort.pred2:Sort.rev2">
+                                    <td>{{$index + 1}}</td>
+                                    <td><a href="#/Question/{{q.questionId}}">{{q.title}}</a></td>
+                                    <td>{{Shared.QTypes[q.type]}}</td>
+                                    <td><input type="checkbox" ng-model="q.selected"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading><span>My authored assessments ({{Model.PF.authoredAssessments.length}})</span></tab-heading>
+                    <div class="panel panel-default">
+                        <!--<span class="navbar-right"><a class="btn btn-primary btn-xs" href="#/Assessment">Add New</a></span>-->
+                        <div ng-show="Model.PF.authoredAssessments.length === 0" class="center2">
+                            <h4>You have not created any assessments.</h4>
+                        </div>
+                        <table class="table table-hover" ng-show="Model.PF.authoredAssessments.length > 0">
+                            <thead>
+                                <tr>
+                                    <th>S#</th>
+                                    <th><a href="" ng-click="Sort.pred3 = 'title';
+                                                Sort.rev3 = !Sort.rev3;">Title</a></th>
+                                    <th><a href="" ng-click="Sort.pred3 = 'openTime';
+                                                Sort.rev3 = !Sort.rev3;">Open time</a></th>
+                                    <th><a href="" ng-click="Sort.pred3 = 'closeTime';
+                                                Sort.rev3 = !Sort.rev3;">Close time</a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="a in Model.PF.authoredAssessments| orderBy:Sort.pred3:Sort.rev3">
+                                    <td>{{$index + 1}}</td>
+                                    <td><a href="#/Assessment/{{a.assessId}}">{{a.title}}</a></td>
+                                    <td>{{a.openTime| date:'medium' }} <!-- <span class="label label-info">{{Shared.dateDiffFromNow(a.openTime)}}</span> --></td>
+                                    <td>{{a.closeTime| date:'medium'}} <!-- <span class="label label-info">{{Shared.dateDiffFromNow(a.closeTime)}}</span> --></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </tab>
+                <!--<tab>-->
+                    <!--<tab-heading><span>My content ({{Model.PF.content.length}})</span></tab-heading>-->
+                    <!--<div ng-include="'web/partials/myContents.html'"></div>-->
+                <!--</tab>-->
+            </tabset>
+        </div>
+    </div> <!-- /container -->
+</div>

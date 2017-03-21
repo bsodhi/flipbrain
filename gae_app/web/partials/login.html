@@ -1,0 +1,54 @@
+<div class="container-fluid" ng-controller="LoginCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div id="loginSection" ng-show="!showLoginHelp" class="well animate-show">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-4">
+                <form>
+                    <div class="form-group">
+                        <label for="login">User ID</label>
+                        <input id="login" ng-model="LF.login" name="login" type="text" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Password</label>
+                        <input id="pass" ng-model="LF.password" type="password" placeholder="Password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success" ng-click="login()">Login</button>
+                    <a href="#/Index" class="btn btn-default">Cancel</a>
+                    <a href="#/Register" class="btn btn-default">Register</a>
+                    <button type="button" class="btn btn-link" ng-click="showLoginHelp = !showLoginHelp">Need help?</button>
+                </form>
+            </div>
+            <div class="col-md-offset-1 col-md-4">
+                <h4>Sign-in using your Google ID</h4>
+                <!--            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <button type="submit" class="btn btn-primary" ng-click="gapiAuth2SignIn()">Login with Google</button> -->
+                <a href="">
+                    <img ng-click="gapiAuth2SignIn()" src="web/assets/img/Blue_signin_Long_normal_32dp_v3.png"/>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+    <div ng-show="showLoginHelp" class="animate-show">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="h3">Login help</span>
+            </div>
+            <div class="panel-body">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input ng-model="PR.name" type="text" class="form-control" id="name" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input ng-model="PR.email" type="email" class="form-control" id="email" placeholder="someone@example.com">
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="requestPassword()">Reset password</button>
+                    <button type="button" class="btn btn-default" ng-click="showLoginHelp = false;">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

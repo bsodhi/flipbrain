@@ -1,0 +1,31 @@
+<div ng-controller="SearchCtrl">
+    <div ng-include="'web/partials/header.html'"></div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                Search results
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div ng-repeat="t in RootModel.Data.Trails" class="col-sm-2">
+                        <div class="thumbnail">
+                            <a href="#/ViewTrail/{{t.trailId}}">
+                                <img src="{{RootModel.getThumbnailUrl(t.thumbnailUrl);}}" alt="{{t.title}}" />
+                                <h4>{{t.title}}</h4>                                
+                            </a>
+                            <span class="label label-info">{{t.tags}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <footer>
+            <p>&copy; FlipBrain 2015</p>
+        </footer>
+    </div> <!-- /container -->
+
+</div>
