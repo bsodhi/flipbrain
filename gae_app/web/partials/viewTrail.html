@@ -15,12 +15,14 @@
         </div>
         <div class="row">
             <div class="col-md-3">
+                <nav>
                 <ul class="nav nav-pills nav-stacked" style="max-height:600px; overflow-y: auto;">
                     <li role="presentation" ng-class="isItemActive(i)"
                         ng-repeat="i in Model.Trail.videos" ng-click="loadTrailItem(i)">
                         <a href="javascript:void(0)" tooltip-placement="bottom"
                            tooltip="{{i.title}}">{{i.title.length < 25 ? i.title : i.title.substring(0,26)+'...'}}</a></li>
                 </ul>
+                </nav>
             </div>
             <div class="col-md-9">
                 <tabset ng-show="Model.videoLoaded">

@@ -226,9 +226,11 @@ srsApp.controller('TrailViewCtrl',
                     $("#videoLoadMsg").show();
                     $scope.Model.videoLoaded = false;
                     $scope.Model.TrailItem = i;
-                    C.log("w x h = " + $window.innerWidth + " x " + $window.innerHeight);
-                    var vw = 81 * 10;//$window.innerWidth*10/12;
-                    var vh = 9 * vw / 16;
+                    var vw = $window.innerWidth * 0.70;
+                    var vh = $window.innerHeight * 0.75;
+                    C.log("w x h = " + vw + " x " + vh);
+                    // var vw = 81 * 10;//$window.innerWidth*10/12;
+                    // var vh = 9 * vw / 16;
                     var htm = "<iframe width='" + vw + "' height='" + vh + "' src='" +
                             $scope.RootModel.getVideoUrl(i.url) + "'" +
                             "frameborder='0' allowfullscreen onload='$(\"#videoLoadMsg\").hide(\"slow\")'></iframe>";
